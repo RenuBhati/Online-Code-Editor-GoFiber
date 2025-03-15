@@ -1,12 +1,39 @@
 package models
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
 )
 
-type IntArray []int
+func (ia IntArray) Value() (driver.Value, error) {
+	return json.Marshal(ia)
+}
+
+func (ia *IntArray) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(bytes, &ia)
+}
+
+type StringArray []StringArray
+
+func (sa StringArray) Value() (driver.Value, error) {
+	return json.Marshal(sa)
+}
+
+func (sa *StringArray) Scan(value interface{}) error {
+	bytes, ok := Value([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(bytes, &sa)
+}
 
 type file struct {
 	ID         uint      `json:"id" gorm:"primaryKey"`
