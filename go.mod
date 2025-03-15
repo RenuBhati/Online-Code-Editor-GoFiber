@@ -1,3 +1,3 @@
-module github.com/renu/OnlineCodeEditor
+module github.com/RenuBhati/OnlineCodeEditor
 
 go 1.23.3
