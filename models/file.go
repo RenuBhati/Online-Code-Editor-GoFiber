@@ -1,6 +1,12 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
+type IntArray []int
 
 type file struct {
 	ID         uint      `json:"id" gorm:"primaryKey"`
@@ -9,21 +15,12 @@ type file struct {
 	Content    string    `json:"content"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
-	SharedWith []uint    `json:"shared_with" gorm:"-"`
+	SharedWith []uint    `json:"shared_with" gorm:"type:json"`
 	FileType   string    `json:"file_type"`
-	GitHistory []string  `json:"git_history" gorm:"-"`
+	GitHistory []string  `json:"git_history" gorm:"type-json"`
 }
 
-type FileShare struct {
-	ID        uint      `json:"id" gorm:"primarykey"`
-	FileID    uint      `json:"file_id"`
-	UserID    uint      `json:"user_id"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-type GitCommit struct {
-	ID uint `json:"id" gorm:"primarykey"`
-	FileID uint `json:"file_id"`
-	Hash string `json:"hash"`
-	CreatedAt time.Time `json:"created_at"`
+func (f *File) BeforeCreate(tx *gorm.DB) error {
+	f.FileType = "owned"
+	return nil
 }
